@@ -1,0 +1,28 @@
+@import '../../styles/var';
+
+.list-body {
+    border: 1px solid $borders_color;
+    background-color: $bg_color;
+
+    &__col {
+        border: 1px solid $borders_color;
+        padding: 16px 6px;
+        vertical-align: middle;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 137.687%;
+        text-align: center;
+
+        &_avatar {
+            padding: 5px;
+            .ant-avatar {
+                width: 40px;
+                height: 40px;
+                background-color: $head_bg_color;
+                text-transform: uppercase;
+            }
+        }
+    }
+
+}

@@ -1,0 +1,37 @@
+@import '../../styles/var';
+
+.list-head {
+    background-color: $head_bg_color;
+
+    &__sort {
+        display: inline-flex;
+        cursor: pointer;
+
+        &.active {
+            filter: brightness(0) saturate(100%) invert(18%) sepia(97%) saturate(3382%) hue-rotate(354deg) brightness(96%) contrast(79%);
+        }
+    }
+
+    &__filter_clear {
+        filter: brightness(0) saturate(100%) invert(18%) sepia(97%) saturate(3382%) hue-rotate(354deg) brightness(96%) contrast(79%);
+        margin-left: -5px;
+    }
+
+    &__col {
+        height: 40px;
+        border: 1px solid $head_bg_color;
+        text-align: center;
+        color: $bg_color;
+        padding: 16px 26px;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 137.687%;
+
+        &-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+    }
+}

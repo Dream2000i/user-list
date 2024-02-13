@@ -1,0 +1,12 @@
+.users-list {
+    margin-bottom: 15px;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    &__table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+}
+
