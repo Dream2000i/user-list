@@ -12,6 +12,11 @@
         }
     }
 
+    &__filter_clear {
+        filter: brightness(0) saturate(100%) invert(18%) sepia(97%) saturate(3382%) hue-rotate(354deg) brightness(96%) contrast(79%);
+        margin-left: -5px;
+    }
+
     &__col {
         height: 40px;
         border: 1px solid $head_bg_color;

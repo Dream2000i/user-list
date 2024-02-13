@@ -14,7 +14,6 @@ export const sortByField = (
     const one = !isNaN(Number(a[field])) ? Number(a[field]) : String(a[field]).toLowerCase() || "";
     const two = !isNaN(Number(b[field])) ? Number(b[field]) : String(b[field]).toLowerCase() || "";
     if (one < two) {
-      
       return -1;
     } else if (one > two) {
       return 1;
@@ -22,7 +21,6 @@ export const sortByField = (
       return 0;
     }
   });
-  console.log(sortedArray);
   
   return !reverse ? sortedArray : sortedArray.reverse();
 };

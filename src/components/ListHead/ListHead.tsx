@@ -29,11 +29,11 @@ export default function ListHead({ columns, filters, sorts, handleChangeFilter, 
                                         content={<>Фильтр: <input value={String(filters[key] ?? '')} onInput={(e) => handleChangeFilter(e, key)} className='list-head__filter' /></>}
 
                                     >
-                                        <FilterOutlined />
+                                        <FilterOutlined/>
                                     </Popover>
                                     {
                                         filters[key] &&
-                                        <CloseOutlined onClick={() => { handleChangeFilter(null, key) }} />
+                                        <CloseOutlined onClick={() => { handleChangeFilter(null, key) }}  className="list-head__filter_clear"/>
                                     }
                                 </>
                             }

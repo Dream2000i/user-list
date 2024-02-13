@@ -37,7 +37,7 @@ export type TypeFilter = Omit<
 
 export type TypeListState = {
   users: Array<TypeUser>;
-  originalUsers: Array<TypeUser>;
+  filteredUsers: Array<TypeUser>;
   sorts: TypeSorts;
   filters: TypeFilter;
 };

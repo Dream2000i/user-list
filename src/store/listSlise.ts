@@ -12,7 +12,7 @@ import { sortDirection, TypePayloadAction } from "../types/helpers";
 import { getUsersAction } from "./getUsersAction";
 
 const initialState: TypeListState = {
-  originalUsers: [],
+  filteredUsers: [],
   users: [],
   sorts: {
     field: "id",
@@ -33,31 +33,41 @@ export const listSlice = createSlice({
         ...state.sorts,
       };
       if (currentSort.field === sortField) {
-        currentSort.direction = currentSort.direction === sortDirection.asc ? sortDirection.desc :sortDirection.asc;
+        currentSort.direction =
+          currentSort.direction === sortDirection.asc
+            ? sortDirection.desc
+            : sortDirection.asc;
       } else {
         currentSort.direction = sortDirection.asc;
       }
       currentSort.field = sortField;
-      const users = sortByField([...state.users], currentSort.field, currentSort.direction !== sortDirection.asc);
+      const users = sortByField(
+        [...state.users],
+        currentSort.field,
+        currentSort.direction !== sortDirection.asc
+      );
       state.users = users;
       state.sorts = currentSort;
     },
 
     filtersUsers(state, action: PayloadAction<TypeFilter>) {
       const new_filters = { ...state.filters, ...action.payload };
-      let users = [...state.originalUsers];
+      let users = [...state.users, ...state.filteredUsers];
       const { field, direction } = { ...state.sorts };
 
-      users = users.filter((item) => {
-        const user = item as TypeUser;
+      const filteredUsers = [] as Array<TypeUser>;
+
+      users = users.filter((user) => {
         let include = true;
 
         for (const [key, value] of Object.entries(new_filters)) {
           if (value) {
             const filter = key as keyof TypeUser;
-            include = String(user[filter]).includes(String(value));
-            console.log(include);
-            if (!include) return false;
+            include = String(user[filter]).toLowerCase().includes(String(value).toLowerCase());
+            if (!include) {
+              filteredUsers.push(user);
+              return false;
+            }
           }
         }
         return include;
@@ -65,16 +75,15 @@ export const listSlice = createSlice({
 
       state.filters = new_filters;
       state.users = sortByField(users, field, direction !== sortDirection.asc);
+      state.filteredUsers = filteredUsers;
     },
 
     addUser(state, action: PayloadAction<TypeNewUser>) {
       const id = Date.now();
       const user = { ...action.payload, id, selected: false };
       const users = [...state.users, user];
-      state.originalUsers = [...state.originalUsers, user];
       const { field, direction } = { ...state.sorts };
       state.users = sortByField(users, field, direction !== sortDirection.asc);
-      
     },
 
     selectUser(state, action: PayloadAction<number>) {
@@ -89,9 +98,7 @@ export const listSlice = createSlice({
 
     deleteUsers(state) {
       const users = [...state.users];
-      const originalUsers = [...state.originalUsers];
       state.users = users.filter((user) => !user.selected);
-      state.originalUsers = originalUsers.filter((user) => !user.selected);
     },
   },
 
@@ -106,7 +113,6 @@ export const listSlice = createSlice({
               item["selected"] = false;
             });
             state.users = action.payload;
-            state.originalUsers = action.payload;
           }
         }
       )
