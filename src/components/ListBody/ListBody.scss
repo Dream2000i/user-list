@@ -16,17 +16,10 @@
 
         &_avatar {
             padding: 5px;
-            .img-placeholder {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 55px;
-                height: 55px;
+            .ant-avatar {
+                width: 40px;
+                height: 40px;
                 background-color: $head_bg_color;
-                border-radius: 50%;
-                color: $bg_color;
-                margin: auto;
-                font-size: 25px;
                 text-transform: uppercase;
             }
         }
