@@ -1,18 +1,15 @@
-import {
-  PayloadAction,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
   TypeListState,
   TypeNewUser,
-  TypePayloadAction,
   TypeUser,
   TypeFilter,
-  sortDirection,
-} from "../types/table";
+} from "../types/usersList";
 
-import { getUsersAction, sortByField } from "./utils.ts/utils";
+import { sortByField } from "./utils";
 import { RootState } from "./store";
+import { sortDirection, TypePayloadAction } from "../types/helpers";
+import { getUsersAction } from "./getUsersAction";
 
 const initialState: TypeListState = {
   originalUsers: [],
@@ -35,19 +32,13 @@ export const listSlice = createSlice({
       const currentSort = {
         ...state.sorts,
       };
-
-      let users = [...state.users];
       if (currentSort.field === sortField) {
-        users = users.reverse();
-        currentSort.direction =
-          currentSort.direction === sortDirection.asc
-            ? sortDirection.desc
-            : sortDirection.asc;
+        currentSort.direction = currentSort.direction === sortDirection.asc ? sortDirection.desc :sortDirection.asc;
       } else {
         currentSort.direction = sortDirection.asc;
-        currentSort.field = sortField;
-        users = sortByField(users, currentSort.field);
       }
+      currentSort.field = sortField;
+      const users = sortByField([...state.users], currentSort.field, currentSort.direction !== sortDirection.asc);
       state.users = users;
       state.sorts = currentSort;
     },
@@ -73,23 +64,34 @@ export const listSlice = createSlice({
       });
 
       state.filters = new_filters;
-      state.users = sortByField(users, field, direction === sortDirection.asc);
+      state.users = sortByField(users, field, direction !== sortDirection.asc);
     },
 
     addUser(state, action: PayloadAction<TypeNewUser>) {
       const id = Date.now();
-      const user = { ...action.payload, id };
-      state.users = [...state.users, user];
+      const user = { ...action.payload, id, selected: false };
+      const users = [...state.users, user];
       state.originalUsers = [...state.originalUsers, user];
+      const { field, direction } = { ...state.sorts };
+      state.users = sortByField(users, field, direction !== sortDirection.asc);
+      
     },
 
-    deleteUser(state, action: PayloadAction<number>) {
-      let users = [...state.users];
-      let originalUsers = [...state.originalUsers];
-      state.users = users.filter((user) => user.id !== action.payload);
-      state.originalUsers = originalUsers.filter(
-        (user) => user.id !== action.payload
-      );
+    selectUser(state, action: PayloadAction<number>) {
+      const users = [...state.users];
+      state.users = users.map((user) => {
+        if (user.id === action.payload) {
+          user.selected = !user.selected;
+        }
+        return user;
+      });
+    },
+
+    deleteUsers(state) {
+      const users = [...state.users];
+      const originalUsers = [...state.originalUsers];
+      state.users = users.filter((user) => !user.selected);
+      state.originalUsers = originalUsers.filter((user) => !user.selected);
     },
   },
 
@@ -101,6 +103,7 @@ export const listSlice = createSlice({
           if (action.payload) {
             action.payload.forEach((item) => {
               item["zipcode"] = item["address"]["zipcode"] ?? "";
+              item["selected"] = false;
             });
             state.users = action.payload;
             state.originalUsers = action.payload;
@@ -115,8 +118,14 @@ export const listSlice = createSlice({
 
 export const selectUsers = (rootState: RootState) => rootState.list.users;
 export const selectFilters = (rootState: RootState) => rootState.list.filters;
+export const selectSorts = (rootState: RootState) => rootState.list.sorts;
 
-export const { changeTableSort, filtersUsers, addUser, deleteUser } =
-  listSlice.actions;
+export const {
+  changeTableSort,
+  filtersUsers,
+  addUser,
+  deleteUsers,
+  selectUser,
+} = listSlice.actions;
 
 export default listSlice.reducer;

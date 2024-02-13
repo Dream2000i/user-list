@@ -1,5 +1,5 @@
 import axios, { Method } from "axios";
-import { API_URL } from "../constant/constant";
+import { API_URL } from "../constants/constants";
 
 
 export class AppApi {

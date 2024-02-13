@@ -1,4 +1,4 @@
-import { API_USERS } from '../constant/constant';
+import { API_USERS } from '../constants/constants';
 import { AppApi } from './app_api';
 
 
